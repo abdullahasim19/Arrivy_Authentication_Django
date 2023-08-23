@@ -1,7 +1,7 @@
 from django.db import models
-from .userProfileModel import InvitationChannelType
-from .entity import EntityUserTypes, Entity
+from .entity import  Entity
 from .userModel import ArrivyUser
+from signups.extraClasses import *
 
 
 class UserCompany(models.Model):

@@ -1,303 +1,36 @@
 from django.db import models
 from .userModel import ArrivyUser
 from .userProfileModel import CompanyType
-from .userProfileModel import (PlanType, convert_plan_type_to_text, DEFAULT_TASK_REMINDER_NOTIFICATION_TIME,
-                               DEFAULT_PENDING_REVIEW_REMINDER_ATTEMPTS, DEFAULT_RATING_TYPE,
-                               DEFAULT_REVIEW_RESPONSE_DELAY
-, OldExternalIntegration,CRMServiceInfo
-                               )
+from signups.extraClasses import *
 
 
-class ExternalIntegrationType:
-    SAMSARA = 4000
-    MOVERBASE = 4001
-    CURRENT_RMS = 4002
-    VONIGO = 4003
-    MOVERS_SUITE = 4004
-    PIPEDRIVE = 4005
-    CALENDLY = 4006
-    HUBSPOT = 4007
-    ZOHO = 4008
-    SHOPIFY = 4009
-    SALESFORCE = 4010
-    INFUSIONSOFT = 4012
-    MOVERS_SUITE_VENDOR_CONNECT = 4013
-    WORKDAY = 4014
-    SHAG_CARPET = 4016
-    ACTIVECAMPAIGN = 4015
-    SQUARE = 4017
-    GOOGLEDRIVE = 4018
-    MOVERS_SUITE_ATTACHMENT = 4019
-    COMPANYCAM = 4020
-    QUICKBASE = 4021
-    INTERCOM = 4022
-    ZOHO_BOOKS = 4023
-    QUICKBOOKS = 4024
-    ZOHO_INVENTORY = 4025
-    FOLLOWUPBOSS = 4026
-    COPPER = 4027
-    EGNYTE = 4028
-    XERO = 4029
-    ONEDRIVE = 4030
-    MICROSOFT_DYNAMICS = 4031
-    XERO_PAYROLL = 4032
-    GOOGLECALENDAR = 4033
-    HUBSPOT_ATTACHMENT = 4034
-    MICROSOFT_DYNAMICS_SALES = 4035
-
-    @classmethod
-    def get_all_integration_types(cls):
-        return [cls.SAMSARA, cls.MOVERBASE, cls.CURRENT_RMS, cls.VONIGO, cls.MOVERS_SUITE, cls.PIPEDRIVE, cls.CALENDLY,
-                cls.HUBSPOT, cls.ZOHO, cls.SALESFORCE, cls.INFUSIONSOFT, cls.MOVERS_SUITE_VENDOR_CONNECT, cls.WORKDAY,
-                cls.SHAG_CARPET, cls.ACTIVECAMPAIGN, cls.SQUARE, cls.GOOGLEDRIVE, cls.MOVERS_SUITE_ATTACHMENT,
-                cls.COMPANYCAM, cls.SHOPIFY, cls.QUICKBASE,  cls.INTERCOM, cls.ZOHO_BOOKS, cls.QUICKBOOKS,
-                cls.ZOHO_INVENTORY, cls.FOLLOWUPBOSS, cls.COPPER, cls.EGNYTE, cls.XERO, cls.GOOGLECALENDAR, cls.ONEDRIVE,
-                cls.MICROSOFT_DYNAMICS, cls.XERO_PAYROLL, cls.HUBSPOT_ATTACHMENT, cls.MICROSOFT_DYNAMICS_SALES]
-
-    @classmethod
-    def get_all_custom_integration_types(cls):
-        return [cls.SHAG_CARPET]
-
-    @classmethod
-    def get_all_payment_integration_types(cls):
-        return [cls.SQUARE, cls.QUICKBOOKS, cls.XERO]
-
-    @classmethod
-    def get_all_non_data_fetch_module_integration_types(cls):
-        return [cls.PIPEDRIVE, cls.ZOHO, cls.HUBSPOT, cls.SALESFORCE, cls.SHOPIFY]
-
-    @classmethod
-    def get_all_integration_types_that_support_forms(cls):
-        return [cls.MOVERS_SUITE]
-
-    @classmethod
-    def get_all_integration_types_that_support_payment_invoice(cls):
-        return [cls.SQUARE, cls.QUICKBOOKS, cls.XERO]
+class OldExternalIntegration(models.Model):
+    samsara_access_token = models.CharField(max_length=100)
+    samsara_group_ids = models.IntegerField()
 
 
-class ExternalIntegrationName:
-    SAMSARA = 'SAMSARA'
-    MOVERBASE = 'MOVERBASE'
-    CURRENT_RMS = 'CURRENT_RMS'
-    VONIGO = 'VONIGO'
-    MOVERS_SUITE = 'MOVERS_SUITE'
-    PIPEDRIVE = 'PIPEDRIVE'
-    CALENDLY = 'CALENDLY'
-    HUBSPOT = 'HUBSPOT'
-    ZOHO = 'ZOHO'
-    SHOPIFY = 'SHOPIFY'
-    SALESFORCE = 'SALESFORCE'
-    INFUSIONSOFT = 'INFUSIONSOFT'
-    MOVERS_SUITE_VENDOR_CONNECT = 'MOVERS_SUITE_VENDOR_CONNECT'
-    WORKDAY = 'WORKDAY'
-    SHAG_CARPET = 'SHAG_CARPET'
-    ACTIVECAMPAIGN = 'ACTIVECAMPAIGN'
-    SQUARE = 'SQUARE'
-    GOOGLEDRIVE = 'GOOGLEDRIVE'
-    GOOGLECALENDAR = 'GOOGLECALENDAR'
-    MOVERS_SUITE_ATTACHMENT = 'MOVERS_SUITE_ATTACHMENT'
-    COMPANYCAM = 'COMPANYCAM'
-    QUICKBASE = 'QUICKBASE'
-    INTERCOM = 'INTERCOM'
-    ZOHO_BOOKS = 'ZOHO_BOOKS'
-    QUICKBOOKS = 'QUICKBOOKS'
-    ZOHO_INVENTORY = 'ZOHO_INVENTORY'
-    FOLLOWUPBOSS = 'FOLLOWUPBOSS'
-    COPPER = 'COPPER'
-    EGNYTE = 'EGNYTE'
-    XERO = 'XERO'
-    ONEDRIVE = 'ONEDRIVE'
-    MICROSOFT_DYNAMICS = 'MICROSOFT_DYNAMICS'
-    XERO_PAYROLL = 'XERO_PAYROLL'
-    HUBSPOT_ATTACHMENT = 'HUBSPOT_ATTACHMENT'
-    MICROSOFT_DYNAMICS_SALES = 'MICROSOFT_DYNAMICS_SALES'
-
-    @classmethod
-    def get_all_integration_names(cls):
-        return [cls.SAMSARA, cls.MOVERBASE, cls.CURRENT_RMS, cls.VONIGO, cls.MOVERS_SUITE, cls.PIPEDRIVE, cls.CALENDLY,
-                cls.HUBSPOT, cls.ZOHO, cls.SALESFORCE, cls.INFUSIONSOFT, cls.MOVERS_SUITE_VENDOR_CONNECT, cls.WORKDAY,
-                cls.SHAG_CARPET, cls.ACTIVECAMPAIGN, cls.SQUARE, cls.GOOGLEDRIVE, cls.MOVERS_SUITE_ATTACHMENT,
-                cls.COMPANYCAM, cls.SHOPIFY, cls.QUICKBASE,  cls.INTERCOM, cls.ZOHO_BOOKS, cls.QUICKBOOKS,
-                cls.ZOHO_INVENTORY, cls.FOLLOWUPBOSS, cls.COPPER, cls.EGNYTE, cls.XERO, cls.GOOGLECALENDAR, cls.ONEDRIVE,
-                cls.MICROSOFT_DYNAMICS, cls.XERO_PAYROLL, cls.HUBSPOT_ATTACHMENT, cls.MICROSOFT_DYNAMICS_SALES]
-
-    @classmethod
-    def get_integration_names_that_support_redirection(cls):
-        return [cls.INTERCOM]
-
-    @classmethod
-    def get_all_custom_integration_names(cls):
-        return [cls.SHAG_CARPET]
-
-    @classmethod
-    def get_all_payment_integration_names(cls):
-        return [cls.SQUARE, cls.QUICKBOOKS, cls.XERO]
-
-    @classmethod
-    def get_all_non_data_fetch_module_integration_names(cls):
-        return [cls.PIPEDRIVE, cls.ZOHO, cls.HUBSPOT, cls.SALESFORCE, cls.SHOPIFY, cls.GOOGLECALENDAR]
-
-    @classmethod
-    def get_all_integration_names_that_support_forms(cls):
-        return [cls.MOVERS_SUITE]
+class CRMServiceInfo(models.Model):
+    crm_type = models.IntegerField(
+        choices=[
+            (ExternalIntegrationType.PIPEDRIVE, 'Pipedrive'),
+        ])
+    crm_id = models.IntegerField  # deal_id of pipe_drive
 
 
-
-def convert_integration_type_to_name(integration_type):
-    if integration_type == ExternalIntegrationType.SAMSARA:
-        return ExternalIntegrationName.SAMSARA
-    elif integration_type == ExternalIntegrationType.MOVERBASE:
-        return ExternalIntegrationName.MOVERBASE
-    elif integration_type == ExternalIntegrationType.CURRENT_RMS:
-        return ExternalIntegrationName.CURRENT_RMS
-    elif integration_type == ExternalIntegrationType.VONIGO:
-        return ExternalIntegrationName.VONIGO
-    elif integration_type == ExternalIntegrationType.MOVERS_SUITE:
-        return ExternalIntegrationName.MOVERS_SUITE
-    elif integration_type == ExternalIntegrationType.PIPEDRIVE:
-        return ExternalIntegrationName.PIPEDRIVE
-    elif integration_type == ExternalIntegrationType.CALENDLY:
-        return ExternalIntegrationName.CALENDLY
-    elif integration_type == ExternalIntegrationType.HUBSPOT:
-        return ExternalIntegrationName.HUBSPOT
-    elif integration_type == ExternalIntegrationType.ZOHO:
-        return ExternalIntegrationName.ZOHO
-    elif integration_type == ExternalIntegrationType.SALESFORCE:
-        return ExternalIntegrationName.SALESFORCE
-    elif integration_type == ExternalIntegrationType.INFUSIONSOFT:
-        return ExternalIntegrationName.INFUSIONSOFT
-    elif integration_type == ExternalIntegrationType.MOVERS_SUITE_VENDOR_CONNECT:
-        return ExternalIntegrationName.MOVERS_SUITE_VENDOR_CONNECT
-    elif integration_type == ExternalIntegrationType.WORKDAY:
-        return ExternalIntegrationName.WORKDAY
-    elif integration_type == ExternalIntegrationType.SHAG_CARPET:
-        return ExternalIntegrationName.SHAG_CARPET
-    elif integration_type == ExternalIntegrationType.ACTIVECAMPAIGN:
-        return ExternalIntegrationName.ACTIVECAMPAIGN
-    elif integration_type == ExternalIntegrationType.SQUARE:
-        return ExternalIntegrationName.SQUARE
-    elif integration_type == ExternalIntegrationType.GOOGLEDRIVE:
-        return ExternalIntegrationName.GOOGLEDRIVE
-    elif integration_type == ExternalIntegrationType.GOOGLECALENDAR:
-        return ExternalIntegrationName.GOOGLECALENDAR
-    elif integration_type == ExternalIntegrationType.MOVERS_SUITE_ATTACHMENT:
-        return ExternalIntegrationName.MOVERS_SUITE_ATTACHMENT
-    elif integration_type == ExternalIntegrationType.COMPANYCAM:
-        return ExternalIntegrationName.COMPANYCAM
-    elif integration_type == ExternalIntegrationType.SHOPIFY:
-        return ExternalIntegrationName.SHOPIFY
-    elif integration_type == ExternalIntegrationType.QUICKBASE:
-        return ExternalIntegrationName.QUICKBASE
-    elif integration_type == ExternalIntegrationType.INTERCOM:
-        return ExternalIntegrationName.INTERCOM
-    elif integration_type == ExternalIntegrationType.ZOHO_BOOKS:
-        return ExternalIntegrationName.ZOHO_BOOKS
-    elif integration_type == ExternalIntegrationType.QUICKBOOKS:
-        return ExternalIntegrationName.QUICKBOOKS
-    elif integration_type == ExternalIntegrationType.ZOHO_INVENTORY:
-        return ExternalIntegrationName.ZOHO_INVENTORY
-    elif integration_type == ExternalIntegrationType.FOLLOWUPBOSS:
-        return ExternalIntegrationName.FOLLOWUPBOSS
-    elif integration_type == ExternalIntegrationType.COPPER:
-        return ExternalIntegrationName.COPPER
-    elif integration_type == ExternalIntegrationType.EGNYTE:
-        return ExternalIntegrationName.EGNYTE
-    elif integration_type == ExternalIntegrationType.XERO:
-        return ExternalIntegrationName.XERO
-    elif integration_type == ExternalIntegrationType.ONEDRIVE:
-        return ExternalIntegrationName.ONEDRIVE
-    elif integration_type == ExternalIntegrationType.MICROSOFT_DYNAMICS:
-        return ExternalIntegrationName.MICROSOFT_DYNAMICS
-    elif integration_type == ExternalIntegrationType.XERO_PAYROLL:
-        return ExternalIntegrationName.XERO_PAYROLL
-    elif integration_type == ExternalIntegrationType.HUBSPOT_ATTACHMENT:
-        return ExternalIntegrationName.HUBSPOT_ATTACHMENT
-    elif integration_type == ExternalIntegrationType.MICROSOFT_DYNAMICS_SALES:
-        return ExternalIntegrationName.MICROSOFT_DYNAMICS_SALES
-    else:
-        return ''
 class CustomIntegrationInfo(models.Model):
     integration_type = models.IntegerField()
 
-    def serialize(self):
-        return dict(
-            integration_type=convert_integration_type_to_name(self.integration_type)
-        )
-
-class QRSettingsModesTypes:
-    AUTO = 1001
-    MANUAL = 1002
-    MIGRATION = 1003
-    NO_MODE = 1004
-
-    @classmethod
-    def get_all_qr_settings_modes_types(cls):
-        return [QRSettingsModesTypes.AUTO, QRSettingsModesTypes.MANUAL, QRSettingsModesTypes.MIGRATION,
-                QRSettingsModesTypes.NO_MODE]
-class QRSettingsModes:
-    AUTO = "AUTO"
-    MANUAL = "MANUAL"
-    MIGRATION = "MIGRATION"
-    NO_MODE = "NO_MODE"
-
-    @classmethod
-    def get_all_qr_settings_modes(cls):
-        return [QRSettingsModes.AUTO, QRSettingsModes.MANUAL, QRSettingsModes.MIGRATION, QRSettingsModes.NO_MODE]
-
-def convert_qr_code_settings_mode_type_to_text(type):
-    if type == QRSettingsModesTypes.AUTO:
-        return QRSettingsModes.AUTO
-    if type == QRSettingsModesTypes.MANUAL:
-        return QRSettingsModes.MANUAL
-    if type == QRSettingsModesTypes.MIGRATION:
-        return QRSettingsModes.MIGRATION
-    if type == QRSettingsModesTypes.NO_MODE:
-        return QRSettingsModes.NO_MODE
 
 class QrSettingsInfo(models.Model):
     mode = models.IntegerField(
-        choices=[(QRSettingsModesTypes.AUTO,'Auto'), (QRSettingsModesTypes.MANUAL,'Manual'), (QRSettingsModesTypes.MIGRATION,'Migration'),
-                 (QRSettingsModesTypes.NO_MODE,'Mode')],
+        choices=[(QRSettingsModesTypes.AUTO, 'Auto'), (QRSettingsModesTypes.MANUAL, 'Manual'),
+                 (QRSettingsModesTypes.MIGRATION, 'Migration'),
+                 (QRSettingsModesTypes.NO_MODE, 'Mode')],
         default=QRSettingsModesTypes.AUTO)
 
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.IntegerField()
     updated_by_user = models.CharField(max_length=100)
-
-    def serialize(self):
-        return dict(
-            mode=convert_qr_code_settings_mode_type_to_text(self.mode),
-            updated_at=self.updated_at if self.updated_at else None,
-            updated_by=self.updated_by,
-            updated_by_user=self.updated_by_user,
-        )
-
-class TeamConfirmationType:
-    SCHEDULE = 1000
-    INSTANT = 1001
-class RouteStartPoint:
-    GROUP = 1001
-    TASK = 1002
-
-class InvitationChannelType:
-    EMAIL = 3001
-    SMS = 3002
-    USERNAME = 30003
-
-    @classmethod
-    def get_all_invitation_channel_types(cls):
-        return [cls.EMAIL, cls.SMS, cls.USERNAME]
-
-class ConsentProvidedType:
-    INACTIVE = 1000  # Inactive means we do not have any information regarding consent yet
-    NO = 1001  # No means customer have not provided consent, so not sms will be sent
-    YES = 1002  # Yes means customer have provided consent evidence information
-    GET_EVERYTIME = 1003  # Get_everytime means we will send opt-in message to customer for every task before sending original message
-
-    @classmethod
-    def get_all_consnet_provided_options_types(cls):
-        return [ConsentProvidedType.INACTIVE, ConsentProvidedType.NO, ConsentProvidedType.YES,
-                ConsentProvidedType.GET_EVERYTIME]
 
 
 class CompanyProfile(models.Model):
@@ -342,7 +75,7 @@ class CompanyProfile(models.Model):
         default=CompanyType.SERVICE)
 
     plan_id = models.IntegerField(default=PlanType.TEAM_MEMBERS)
-    plan = models.CharField(default=convert_plan_type_to_text(PlanType.TEAM_MEMBERS),max_length=100)
+    plan = models.CharField(default=convert_plan_type_to_text(PlanType.TEAM_MEMBERS), max_length=100)
     reminder_notification_time = models.IntegerField(default=0)
     reminder_notification_time_hours = models.IntegerField(default=DEFAULT_TASK_REMINDER_NOTIFICATION_TIME)
     team_reminder_queued_task_name = models.CharField(max_length=100, blank=True, null=True)
@@ -383,8 +116,8 @@ class CompanyProfile(models.Model):
     team_confirmation_day = models.IntegerField()
     team_confirmation_notification_type = models.CharField(max_length=100, blank=True, null=True)
     team_confirmation_type = models.IntegerField(choices=[
-        (TeamConfirmationType.SCHEDULE,'Schedule'),
-        (TeamConfirmationType.INSTANT,'Instant')],
+        (TeamConfirmationType.SCHEDULE, 'Schedule'),
+        (TeamConfirmationType.INSTANT, 'Instant')],
         default=TeamConfirmationType.SCHEDULE)
     team_confirmation_custom_message = models.CharField(max_length=100, blank=True, null=True)
     # change_reschedule_status_title is not using anymore
@@ -394,7 +127,7 @@ class CompanyProfile(models.Model):
     rating_threshold = models.IntegerField()
     review_response_delay = models.IntegerField(default=DEFAULT_REVIEW_RESPONSE_DELAY)
     exceptions = models.JSONField()
-    samsara_integration_info = models.OneToOneField(OldExternalIntegration,on_delete=models.CASCADE)
+    samsara_integration_info = models.OneToOneField(OldExternalIntegration, on_delete=models.CASCADE)
     task_notifications_settings = models.JSONField()
     status_priority = models.JSONField()
     mileage_unit = models.IntegerField()
@@ -404,17 +137,17 @@ class CompanyProfile(models.Model):
     filters = models.JSONField()
     time_line_filters = models.JSONField()
     signup_channel = models.IntegerField(choices=[
-        (InvitationChannelType.EMAIL,'Email'),
-        (InvitationChannelType.SMS,'SMS'),
-        (InvitationChannelType.USERNAME,'Username')
+        (InvitationChannelType.EMAIL, 'Email'),
+        (InvitationChannelType.SMS, 'SMS'),
+        (InvitationChannelType.USERNAME, 'Username')
     ],
         default=InvitationChannelType.EMAIL)
-    signup_address = models.CharField(default=None,max_length=100)
+    signup_address = models.CharField(default=None, max_length=100)
     can_field_crew_view_contact_info = models.BooleanField(default=True)
     reminder_time_after_task_creation = models.IntegerField(default=0)
     route_start = models.IntegerField(
-        choices=[(RouteStartPoint.GROUP,'Group'),
-                 (RouteStartPoint.TASK,'Task')],
+        choices=[(RouteStartPoint.GROUP, 'Group'),
+                 (RouteStartPoint.TASK, 'Task')],
         default=RouteStartPoint.GROUP
     )
     depot_departure_time = models.TimeField()
@@ -445,11 +178,11 @@ class CompanyProfile(models.Model):
     enable_customer_view_settings_for_scheduler = models.BooleanField(default=False)
     send_task_reminders_according_to_work_week_settings = models.BooleanField(default=True)
 
-    crm_services_info = models.OneToOneField(CRMServiceInfo,on_delete=models.CASCADE)
+    crm_services_info = models.OneToOneField(CRMServiceInfo, on_delete=models.CASCADE)
 
     enable_safety_measures = models.BooleanField(default=False)
     safety_measures_title = models.CharField(max_length=100, blank=True, null=True)
-    safety_measures = models.TextField(blank=True,null=True)
+    safety_measures = models.TextField(blank=True, null=True)
     default_time_interval = models.IntegerField(default=30)
 
     is_localization_enabled = models.BooleanField(default=False)
@@ -488,7 +221,7 @@ class CompanyProfile(models.Model):
 
     can_create_booking_only = models.BooleanField(default=False)
 
-    #kiosk_configuration = ndb.StructuredProperty(KioskConfiguration)
+    # kiosk_configuration = ndb.StructuredProperty(KioskConfiguration)
 
     # Flag to trigger Form Auto Save
     auto_save_form = models.BooleanField(default=False)
@@ -541,7 +274,7 @@ class CompanyProfile(models.Model):
     # To enable image compression on File uploads(i.e imageUpload Component)
     enable_image_compression = models.BooleanField(default=True)
     "--------------------------------- Custom Integrations Configurations --------------------------------------"
-    custom_integrations = models.OneToOneField(CustomIntegrationInfo,on_delete=models.CASCADE)
+    custom_integrations = models.OneToOneField(CustomIntegrationInfo, on_delete=models.CASCADE)
     "-----------------------------------------------------------------------------------------------------------"
 
     "------------------------- Premium features control flags and billing attributes ---------------------------"
@@ -573,12 +306,12 @@ class CompanyProfile(models.Model):
     tombstone_date = models.DateTimeField()
 
     # indicates businesses crm status
-    crm_status = models.CharField(default="LEAD",blank=True,null=True,max_length=100)
+    crm_status = models.CharField(default="LEAD", blank=True, null=True, max_length=100)
 
     # indicates business crm type
-    crm_business_type = models.CharField(default="INTEGRATED",max_length=100)
+    crm_business_type = models.CharField(default="INTEGRATED", max_length=100)
     # indicates the business industry
-    crm_business_industry = models.CharField(default="SERVICE",max_length=100)
+    crm_business_industry = models.CharField(default="SERVICE", max_length=100)
 
     # when on-boarding of a business started
     onboarding_date = models.DateTimeField()
@@ -611,7 +344,7 @@ class CompanyProfile(models.Model):
     # Indicates if company has enabled sign-in via qr_code for its entities
     allow_sign_in_via_qr = models.BooleanField(default=False)
     # Settings containing relative information related to qr_code and if settings updated/qr-mode selected once or not.
-    qr_settings = models.OneToOneField(QrSettingsInfo,on_delete=models.CASCADE)
+    qr_settings = models.OneToOneField(QrSettingsInfo, on_delete=models.CASCADE)
     "-----------------------------------------------------------------------------------------------------------"
 
     "------------------------------------------ Enterprise Login Attributes --------------------------------"
@@ -625,7 +358,8 @@ class CompanyProfile(models.Model):
     "------------------------------------------ SMS Consent Information --------------------------------"
     # Indicates if company has provided sms consent information or not
     sms_consent_provided = models.IntegerField(
-        choices=[(ConsentProvidedType.INACTIVE,'Inactive'), (ConsentProvidedType.NO,'No'), (ConsentProvidedType.YES,'Yes'),
-                 (ConsentProvidedType.GET_EVERYTIME,'Everytime')],
+        choices=[(ConsentProvidedType.INACTIVE, 'Inactive'), (ConsentProvidedType.NO, 'No'),
+                 (ConsentProvidedType.YES, 'Yes'),
+                 (ConsentProvidedType.GET_EVERYTIME, 'Everytime')],
         default=ConsentProvidedType.INACTIVE)
     sms_consent_information = models.JSONField()

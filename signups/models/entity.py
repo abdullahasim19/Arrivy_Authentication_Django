@@ -1,65 +1,6 @@
 from django.db import models
 from .userModel import ArrivyUser
-
-
-class InvitationChannelType:
-    EMAIL = 3001
-    SMS = 3002
-    USERNAME = 30003
-
-    @classmethod
-    def get_all_invitation_channel_types(cls):
-        return [cls.EMAIL, cls.SMS, cls.USERNAME]
-
-
-class EntityUserTypes:
-    def __init__(self):
-        pass
-
-    CUSTOMER = 1000
-    CREW = 1002
-
-    @classmethod
-    def get_all_entity_user_types(cls):
-        return [cls.CUSTOMER, cls.CREW]
-
-
-class EntityUserTypeNames:
-    def __init__(self):
-        pass
-
-    CUSTOMER = 'CUSTOMER'
-    CREW = 'CREW'
-
-    @classmethod
-    def get_all_entity_user_names(cls):
-        return [cls.CUSTOMER, cls.CREW]
-
-
-def convert_entity_user_type_to_name(entity_type):
-    if entity_type == EntityUserTypes.CUSTOMER:
-        return EntityUserTypeNames.CUSTOMER
-    elif entity_type == EntityUserTypes.CREW:
-        return EntityUserTypeNames.CREW
-    else:
-        return EntityUserTypeNames.CREW
-
-
-def convert_entity_user_name_to_type(entity_name):
-    if entity_name.upper() == EntityUserTypeNames.CUSTOMER:
-        return EntityUserTypes.CUSTOMER
-    elif entity_name.upper() == EntityUserTypeNames.CREW:
-        return EntityUserTypes.CREW
-    else:
-        return EntityUserTypes.CREW
-
-
-class EntityInviteStatus:
-    def __init__(self):
-        pass
-
-    PENDING = 7001
-    ACCEPTED = 7002
+from signups.extraClasses import *
 
 
 class Entity(models.Model):
@@ -73,13 +14,13 @@ class Entity(models.Model):
     details = models.CharField(max_length=100, blank=True, null=True)
     image_id = models.IntegerField(blank=True, null=True)
     image_path = models.CharField(max_length=100, blank=True, null=True)
-    extra_fields = models.JSONField(blank=True,null=True)
-    is_default = models.BooleanField(default=False,blank=True,null=True)
-    can_turnoff_location = models.BooleanField(default=True,blank=True,null=True)
+    extra_fields = models.JSONField(blank=True, null=True)
+    is_default = models.BooleanField(default=False, blank=True, null=True)
+    can_turnoff_location = models.BooleanField(default=True, blank=True, null=True)
     external_id = models.CharField(max_length=100, blank=True, null=True)
-    is_disabled = models.BooleanField(default=False,blank=True,null=True)
+    is_disabled = models.BooleanField(default=False, blank=True, null=True)
     group_id = models.IntegerField(blank=True, null=True)
-    notifications = models.JSONField(blank=True,null=True)
+    notifications = models.JSONField(blank=True, null=True)
     skill_ids = models.IntegerField(blank=True, null=True)
     is_active = models.BooleanField(default=True)
     is_status_priority_notifications_disabled = models.BooleanField(default=False)
@@ -90,9 +31,9 @@ class Entity(models.Model):
         ],
         default=EntityInviteStatus.PENDING)
 
-    joined_datetime = models.DateTimeField(blank=True,null=True)
+    joined_datetime = models.DateTimeField(blank=True, null=True)
     additional_group_ids = models.IntegerField(blank=True, null=True)
-    allow_status_notifications = models.JSONField(blank=True,null=True)
+    allow_status_notifications = models.JSONField(blank=True, null=True)
     # Automatically add entity creation time
     created = models.DateTimeField(auto_now_add=True)
     # Automatically track entity update time
@@ -127,20 +68,20 @@ class Entity(models.Model):
     exact_location = models.CharField(max_length=100, blank=True, null=True)
     use_lat_lng_address = models.BooleanField(default=False)
     complete_address = models.CharField(max_length=100, blank=True, null=True)
-    is_address_geo_coded = models.BooleanField(blank=True,null=True)
+    is_address_geo_coded = models.BooleanField(blank=True, null=True)
     # user type will differentiate between customer and crew
     user_type = models.IntegerField(
         choices=[
             (EntityUserTypes.CUSTOMER, "Customer"),
             (EntityUserTypes.CREW, "Crew")
         ],
-        default=EntityUserTypes.CREW,blank=True,null=True
+        default=EntityUserTypes.CREW, blank=True, null=True
     )
 
     # Will add against customer for which entity is created
-    entity_customer_id = models.IntegerField(blank=True,null=True)
+    entity_customer_id = models.IntegerField(blank=True, null=True)
     # Company bookings which are visible to customer on company customer portal
-    visible_bookings = models.IntegerField(blank=True,null=True)
+    visible_bookings = models.IntegerField(blank=True, null=True)
 
     given = ['owner', 'name']
     okta_user_id = models.CharField(max_length=100, blank=True, null=True)

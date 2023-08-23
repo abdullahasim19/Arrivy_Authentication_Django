@@ -5,8 +5,7 @@ import logging
 from signups.models.userProfileModel import PlanType, convert_plan_type_to_text
 from signups.models.entity import InvitationChannelType
 from .models import ArrivyUser,UserProfile,EntityProfile,Entity,CompanyProfile
-from .models.entity import convert_entity_user_name_to_type
-from .models.userProfileModel import get_status_priorities,InvitationChannelType
+from signups.extraClasses import *
 # Create your views here.
 
 def signup(request):
