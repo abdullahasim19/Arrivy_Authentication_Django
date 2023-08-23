@@ -2,11 +2,10 @@ from django.http import HttpResponse, JsonResponse
 import json
 from utils import Util
 import logging
-from signups.models.userProfileModel import PlanType, convert_plan_type_to_text
-from signups.models.entity import InvitationChannelType
 from .models import ArrivyUser,UserProfile,EntityProfile,Entity,CompanyProfile
 from signups.extraClasses import *
 # Create your views here.
+
 
 def signup(request):
     if request.method == 'POST':
