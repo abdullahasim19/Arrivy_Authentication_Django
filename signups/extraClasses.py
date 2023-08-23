@@ -893,6 +893,7 @@ def get_status_priorities():
 
 PERMISSION_GROUPS_THAT_CAN_APPROVE_CREW_AVAILABILITY_REQUESTS = ['Admin', 'Scheduler', 'Viewer']
 
+
 class EntityUserTypeNames:
     def __init__(self):
         pass
@@ -903,6 +904,7 @@ class EntityUserTypeNames:
     @classmethod
     def get_all_entity_user_names(cls):
         return [cls.CUSTOMER, cls.CREW]
+
 
 def convert_entity_user_name_to_type(entity_name):
     if entity_name.upper() == EntityUserTypeNames.CUSTOMER:

@@ -2,16 +2,25 @@ from django.http import HttpResponse, JsonResponse
 import json
 from utils import Util
 import logging
-from .models import ArrivyUser,UserProfile,EntityProfile,Entity,CompanyProfile
+from .models import ArrivyUser, UserProfile, EntityProfile, Entity, CompanyProfile
 from signups.extraClasses import *
-# Create your views here.
 
+
+# Create your views here.
 
 def signup(request):
     if request.method == 'POST':
+        #t=Entity.objects.filter(owner__email='a@a.com')
+        #print(t[0].pk)
+        tt=list(EntityProfile.objects.all())
+        for t in tt:
+            print(t.user_companies.owned_company_id.email)
+        # pp=list(Entity.objects.all())
+        # for p in pp:
+        #     print(p.owner.email)
         # user = ArrivyUser(username='abd1', email='a@a.com', first_name='ABD')
         # user.save()
-        # return HttpResponse('User Created')
+        return HttpResponse('User Created')
         try:
             data = json.loads(request.body)
         except json.JSONDecodeError:
@@ -75,7 +84,7 @@ def signup(request):
         ref = data.get('ref')
         phone = data.get('phone')
 
-    register_user(email,password,fullname)
+    register_user(email, password, fullname)
     return HttpResponse('User created')
 
 
@@ -84,11 +93,23 @@ def signup(request):
 #                   request_company_name=None, custom_message_type=None, is_premium_enabled=True, username=None,
 #                   verified=False, return_communication_data=False, signup_source=None, sso_access_token=None,
 #                   sso_identification_key=None):
-def register_user(email, password, request_fullname,verified=False):
+def register_user(email, password, request_fullname, verified=False):
     if request_fullname and not isinstance(request_fullname, str):
         fullname = str(request_fullname.encode('utf-8'))
     else:
         fullname = request_fullname
+
+    # first we search that entity already exists we do so by searching the entity table
+    # with the email in the request
+
+    entity_already_exists=list(Entity.objects.filter(owner__email=email)) #fetching email
+
+    if entity_already_exists:
+        entity_already_exists=entity_already_exists[0]
+        id_of_already_existing_entity=entity_already_exists.pk
+
+
+
 
     newuser = ArrivyUser(
         email=email,
@@ -145,14 +166,14 @@ def register_user(email, password, request_fullname,verified=False):
 
     company_profile = CompanyProfile(
         owner=newuser,
-        fullname= fullname,
+        fullname=fullname,
         default_entity_id=entity.pk,
         support_email=email,
         # acquisition_source=ref,
         plan=convert_plan_type_to_text(PlanType.TEAM_MEMBERS),
         plan_id=PlanType.TEAM_MEMBERS,
         status_priority=get_status_priorities(),
-        #mobile_number=phone,
+        # mobile_number=phone,
         signup_channel=InvitationChannelType.EMAIL,
         signup_address='',
         is_premium_enabled=True,
@@ -161,7 +182,6 @@ def register_user(email, password, request_fullname,verified=False):
         permission_groups_that_can_approve_crew_availability_requests=PERMISSION_GROUPS_THAT_CAN_APPROVE_CREW_AVAILABILITY_REQUESTS,
         sms_consent_provided=ConsentProvidedType.NO
     )
-
 
     # communication_data = []
     # if request_company_name and not isinstance(request_company_name, str):
@@ -218,10 +238,6 @@ def register_user(email, password, request_fullname,verified=False):
     # old_entity_user = None
     # company_profile = None
     # user_type = 'CREW'
-
-
-
-
 
     # if entity_id:
     #     logging.info("Checking if entity exists against provided entity_id: {} and using "

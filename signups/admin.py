@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import UserProfile,ArrivyUser,Entity,CompanyProfile,EntityProfile
+from .models import UserProfile, ArrivyUser, Entity, CompanyProfile, EntityProfile,UserCompany
+
 
 # Register your models here.
 
@@ -30,3 +31,4 @@ admin.site.register(UserProfile)
 admin.site.register(Entity)
 admin.site.register(CompanyProfile)
 admin.site.register(EntityProfile)
+admin.site.register(UserCompany)
