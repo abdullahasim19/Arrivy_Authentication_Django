@@ -67,6 +67,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'arrivy.wsgi.application'
+#AUTH_USER_MODEL = 'signups.ArrivyUser'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

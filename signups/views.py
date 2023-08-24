@@ -4,7 +4,7 @@ from utils import Util
 import logging
 from .models import ArrivyUser, UserProfile, EntityProfile, Entity, CompanyProfile,UserCompany
 from signups.extraClasses import *
-
+from django.contrib.auth import authenticate, login, logout
 
 # Create your views here.
 
@@ -25,8 +25,15 @@ def create_entity(request):
     )
     entity.save()
 
-
+def login_user(request,email,password):
+    user = authenticate(request, username=email, password=password)
+    if user:
+        login(request, user)
+        return True
+    else:
+        return False
 def signup(request):
+
     if request.method == 'POST':
         # t=Entity.objects.filter(owner__email='a@a.com')
         # print(t[0].pk)
@@ -114,8 +121,21 @@ def signup(request):
         email=data.get('email')
         password=data.get('password')
         fullname=data.get('fullname')
-        register_user(email, password, fullname)
-    return HttpResponse('User created')
+        if login_user(request,email,password):
+            return HttpResponse('Login Done')
+        else:
+            return HttpResponse('Login Failed')
+        #print(email)
+        #print(password)
+        #logout(request)
+        # user = authenticate(request, username=email, password=password)
+        # if user:
+        #     login(request, user)
+        #     return HttpResponse('Login Done')
+        # else:
+        #     return HttpResponse('Login Failed')
+        #register_user(email, password, fullname)
+    return HttpResponse('Users created')
 
 def register_user(userEmail, password, request_fullname, verified=False):
     if request_fullname and not isinstance(request_fullname, str):
