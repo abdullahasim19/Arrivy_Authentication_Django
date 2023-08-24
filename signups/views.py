@@ -12,9 +12,9 @@ def signup(request):
     if request.method == 'POST':
         #t=Entity.objects.filter(owner__email='a@a.com')
         #print(t[0].pk)
-        tt=list(EntityProfile.objects.all())
-        for t in tt:
-            print(t.user_companies.owned_company_id.email)
+        # tt=list(EntityProfile.objects.all())
+        # for t in tt:
+        #     print(t.user_companies.owned_company_id.email)
         # pp=list(Entity.objects.all())
         # for p in pp:
         #     print(p.owner.email)
@@ -84,7 +84,7 @@ def signup(request):
         ref = data.get('ref')
         phone = data.get('phone')
 
-    register_user(email, password, fullname)
+    #register_user(email, password, fullname)
     return HttpResponse('User created')
 
 

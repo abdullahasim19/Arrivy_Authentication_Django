@@ -35,7 +35,7 @@ class UserCompany(models.Model):
 
 
 class EntityProfile(models.Model):
-    owner = models.IntegerField(blank=True,null=True)
+    owner = models.ForeignKey(ArrivyUser,on_delete=models.CASCADE,blank=True,null=True) # should be foreign key from user
     address = models.CharField(max_length=100, blank=True, null=True)
     country = models.CharField(max_length=100, blank=True, null=True)
     details = models.TextField(blank=True,null=True)
@@ -49,8 +49,8 @@ class EntityProfile(models.Model):
 
     acquisition_source = models.CharField(max_length=100, blank=True, null=True)
 
-    company_entity_id = models.IntegerField(blank=True,null=True) # should be foreign key
-    owned_company_id = models.IntegerField(blank=True,null=True) # should be foreign key
+    company_entity_id = models.IntegerField(models.ForeignKey(Entity,on_delete=models.CASCADE),blank=True,null=True)  # should be foreign key corresponding entity
+    owned_company_id = models.IntegerField(models.ForeignKey(ArrivyUser,on_delete=models.CASCADE),blank=True,null=True)  # should be foreign key from User
 
     mobile_number = models.CharField(max_length=100, blank=True, null=True)
     phone = models.CharField(max_length=100, blank=True, null=True)

@@ -28,7 +28,7 @@ class UserProfile(models.Model):
         ( CompanyType.UTILITY,"Utility"),
         ( CompanyType.ROOFING,"Roofing")
     ]
-    owner=models.ForeignKey(ArrivyUser,on_delete=models.CASCADE)
+    owner=models.ForeignKey(ArrivyUser,on_delete=models.CASCADE,related_name='corresponding_user',blank=True,null=True) # corresponding user
     fullname=models.CharField(max_length=100,blank=True,null=True)
     address=models.CharField(max_length=100,blank=True,null=True)
     exact_location=models.CharField(max_length=100)
@@ -50,9 +50,12 @@ class UserProfile(models.Model):
     website = models.CharField(max_length=100,blank=True,null=True)
     social_links = models.JSONField(blank=True,null=True)
     company_owned = models.BooleanField(blank=True,null=True)
-    company_entity_id = models.ForeignKey(Entity,on_delete=models.CASCADE)# has to be foreign key from entity model
-    owned_company_id = models.IntegerField(blank=True,null=True)
-    default_entity_id = models.IntegerField(blank=True,null=True)#should be foreign key?
+
+    company_entity_id = models.ForeignKey(Entity,on_delete=models.CASCADE,related_name='corresponding_entity',blank=True,null=True)# has to be foreign key from entity model
+    owned_company_id = models.ForeignKey(ArrivyUser,on_delete=models.CASCADE,related_name='owner_user',blank=True,null=True)
+    default_entity_id = models.ForeignKey(Entity,on_delete=models.CASCADE,related_name='owner_entity',blank=True,null=True)#should be foreign key?
+
+
     timezone = models.CharField(max_length=100,blank=True,null=True)
     acquisition_source = models.CharField(max_length=100,blank=True,null=True)
     created = models.DateTimeField(auto_now_add=True)

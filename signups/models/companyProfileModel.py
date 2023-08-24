@@ -1,6 +1,6 @@
 from django.db import models
 from .userModel import ArrivyUser
-from .userProfileModel import CompanyType
+from .entity import Entity
 from signups.extraClasses import *
 
 
@@ -56,7 +56,7 @@ class CompanyProfile(models.Model):
         (CompanyType.UTILITY, "Utility"),
         (CompanyType.ROOFING, "Roofing")
     ]
-    owner = models.ForeignKey(ArrivyUser, on_delete=models.CASCADE)
+    owner = models.ForeignKey(ArrivyUser, on_delete=models.CASCADE,blank=True,null=True)
     fullname = models.CharField(max_length=100, blank=True, null=True)
     address = models.CharField(max_length=100, blank=True, null=True)
     exact_location = models.CharField(max_length=100, blank=True, null=True)
@@ -84,7 +84,9 @@ class CompanyProfile(models.Model):
     image_path = models.CharField(max_length=100, blank=True, null=True)
     website = models.CharField(max_length=100, blank=True, null=True)
     social_links = models.JSONField()
-    default_entity_id = models.IntegerField()
+
+    default_entity_id = models.ForeignKey(Entity,on_delete=models.CASCADE,blank=True,null=True)  # corresponding entity
+
     timezone = models.CharField(max_length=100, blank=True, null=True)
     acquisition_source = models.CharField(max_length=100, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
