@@ -22,5 +22,6 @@ from .views import fun2
 urlpatterns = [
     path('admin/', admin.site.urls),
     #path('',fun2)
-    path('',views.signup)
+    path('',views.signup),
+    path('entity',views.create_entity)
 ]

@@ -2,38 +2,45 @@ from django.http import HttpResponse, JsonResponse
 import json
 from utils import Util
 import logging
-from .models import ArrivyUser, UserProfile, EntityProfile, Entity, CompanyProfile,UserCompany
+from .models import ArrivyUser, UserProfile, EntityProfile, Entity, CompanyProfile, UserCompany
 from signups.extraClasses import *
 from django.contrib.auth import authenticate, login, logout
+
 
 # Create your views here.
 
 
 def create_entity(request):
+    if request.method!='POST':
+        return HttpResponse('Error')
     try:
         data = json.loads(request.body)
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid JSON data'}, status=400)
 
     email = data.get('email')
-    name = data.get('name')
-    company_id = ArrivyUser.objects.get(username='abdullah')  # later we will fetch the authenticated user
+    name = data.get('fullname')
+    password=data.get('password')
+    company_id = ArrivyUser.objects.get(username='test@arrivy.com')  # later we will fetch the authenticated user
     entity = Entity(
         owner=company_id,
         name=name,
         email=email
     )
     entity.save()
+    register_user(email,password,name)
+    return HttpResponse('Entity Created')
 
-def login_user(request,email,password):
+def login_user(request, email, password):
     user = authenticate(request, username=email, password=password)
     if user:
         login(request, user)
         return True
     else:
         return False
-def signup(request):
 
+
+def signup(request):
     if request.method == 'POST':
         # t=Entity.objects.filter(owner__email='a@a.com')
         # print(t[0].pk)
@@ -118,24 +125,25 @@ def signup(request):
         # password = data.get('password')
         # ref = data.get('ref')
         # phone = data.get('phone')
-        email=data.get('email')
-        password=data.get('password')
-        fullname=data.get('fullname')
-        if login_user(request,email,password):
+        email = data.get('email')
+        password = data.get('password')
+        fullname = data.get('fullname')
+        if login_user(request, email, password):
             return HttpResponse('Login Done')
         else:
             return HttpResponse('Login Failed')
-        #print(email)
-        #print(password)
-        #logout(request)
+        # print(email)
+        # print(password)
+        # logout(request)
         # user = authenticate(request, username=email, password=password)
         # if user:
         #     login(request, user)
         #     return HttpResponse('Login Done')
         # else:
         #     return HttpResponse('Login Failed')
-        #register_user(email, password, fullname)
+        # register_user(email, password, fullname)
     return HttpResponse('Users created')
+
 
 def register_user(userEmail, password, request_fullname, verified=False):
     if request_fullname and not isinstance(request_fullname, str):
@@ -145,7 +153,7 @@ def register_user(userEmail, password, request_fullname, verified=False):
 
     # first we search that entity already exists we do so by searching the entity table
     # with the email in the request
-    entity_already_exists=None
+    entity_already_exists = None
     try:
         entity_already_exists = Entity.objects.get(email=userEmail)  # fetching email
     except Exception as e:
@@ -158,7 +166,7 @@ def register_user(userEmail, password, request_fullname, verified=False):
         owner_of_already_existing_entity = entity_already_exists.owner
         user_type = convert_entity_user_type_to_name(entity_already_exists.user_type)
 
-        old_entity_profile=None
+        old_entity_profile = None
         try:
             old_entity_profile = EntityProfile.objects.get(user_companies__company_entity_id
                                                            =id_of_already_existing_entity)
@@ -167,17 +175,17 @@ def register_user(userEmail, password, request_fullname, verified=False):
 
         if not old_entity_profile:  # if no entity profile is found we search for
             try:
-                old_entity_profile = CompanyProfile.objects.get(default_entity_id__pk=id_of_already_existing_entity)
+                old_entity_profile = CompanyProfile.objects.get(default_entity_id=id_of_already_existing_entity)
             except Exception as e:
                 logging.error(e)
 
-        company_profile=None
+        company_profile = None
         try:
             company_profile = CompanyProfile.objects.get(owner=owner_of_already_existing_entity)
         except Exception as e:
             logging.error(e)
 
-    existing_users_within_company=None
+    existing_users_within_company = None
     if entity_already_exists and userEmail:
         try:
             existing_users_within_company = list(EntityProfile.objects.
@@ -205,14 +213,14 @@ def register_user(userEmail, password, request_fullname, verified=False):
     newUser.set_password(password)
     newUser.save()
 
-    default_entity_id=None
-    owned_company_id=None
-    company_entity_id=None
-    company_owned=False
+    default_entity_id = None
+    owned_company_id = None
+    company_entity_id = None
+    company_owned = False
     if entity_already_exists:
         owned_company_id = owner_of_already_existing_entity
         company_entity_id = id_of_already_existing_entity
-        company_owned=True
+        company_owned = True
         logging.info('Entity Already Exists')
     else:
         notifications = dict(
@@ -241,7 +249,7 @@ def register_user(userEmail, password, request_fullname, verified=False):
             user_type=convert_entity_user_name_to_type('CREW')
         )
         entity.save()
-        default_entity_id=entity
+        default_entity_id = entity
     # owner_user = ArrivyUser.objects.get(username='abdullah')
     logging.info('Creating User Profile')
     profile = UserProfile(
