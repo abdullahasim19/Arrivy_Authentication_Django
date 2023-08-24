@@ -913,3 +913,12 @@ def convert_entity_user_name_to_type(entity_name):
         return EntityUserTypes.CREW
     else:
         return EntityUserTypes.CREW
+
+
+def convert_entity_user_type_to_name(entity_type):
+    if entity_type == EntityUserTypes.CUSTOMER:
+        return EntityUserTypeNames.CUSTOMER
+    elif entity_type == EntityUserTypes.CREW:
+        return EntityUserTypeNames.CREW
+    else:
+        return EntityUserTypeNames.CREW

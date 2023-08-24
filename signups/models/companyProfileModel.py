@@ -5,16 +5,16 @@ from signups.extraClasses import *
 
 
 class OldExternalIntegration(models.Model):
-    samsara_access_token = models.CharField(max_length=100)
-    samsara_group_ids = models.IntegerField()
+    samsara_access_token = models.CharField(max_length=100,blank=True,null=True)
+    samsara_group_ids = models.IntegerField(blank=True,null=True)
 
 
 class CRMServiceInfo(models.Model):
     crm_type = models.IntegerField(
         choices=[
             (ExternalIntegrationType.PIPEDRIVE, 'Pipedrive'),
-        ])
-    crm_id = models.IntegerField  # deal_id of pipe_drive
+        ],blank=True,null=True)
+    crm_id = models.IntegerField(blank=True,null=True)  # deal_id of pipe_drive
 
 
 class CustomIntegrationInfo(models.Model):
@@ -80,10 +80,10 @@ class CompanyProfile(models.Model):
     reminder_notification_time_hours = models.IntegerField(default=DEFAULT_TASK_REMINDER_NOTIFICATION_TIME)
     team_reminder_queued_task_name = models.CharField(max_length=100, blank=True, null=True)
     emergency = models.CharField(max_length=100, blank=True, null=True)
-    image_id = models.IntegerField()
+    image_id = models.IntegerField(blank=True,null=True)
     image_path = models.CharField(max_length=100, blank=True, null=True)
     website = models.CharField(max_length=100, blank=True, null=True)
-    social_links = models.JSONField()
+    social_links = models.JSONField(blank=True,null=True)
 
     default_entity_id = models.ForeignKey(Entity,on_delete=models.CASCADE,blank=True,null=True)  # corresponding entity
 
@@ -93,8 +93,8 @@ class CompanyProfile(models.Model):
     updated = models.DateTimeField(auto_now=True)
     trial_expiration_date = models.DateField(blank=True, null=True)
     discount = models.IntegerField(default=0)
-    additional_charges = models.JSONField()
-    time_reporting_permissions = models.JSONField()
+    additional_charges = models.JSONField(blank=True,null=True)
+    time_reporting_permissions = models.JSONField(blank=True,null=True)
     short_day_format = models.BooleanField(default=False)
     full_day_format = models.BooleanField(default=False)
 
@@ -103,19 +103,19 @@ class CompanyProfile(models.Model):
     mark_task_late_when = models.CharField(default="one_assignee_is_late", max_length=100, blank=True, null=True)
     min_acceptable_rating = models.IntegerField(default=4)
     custom_webhook = models.CharField(max_length=100, blank=True, null=True)
-    custom_webhook_authentication_keys = models.JSONField()
+    custom_webhook_authentication_keys = models.JSONField(blank=True,null=True)
     color = models.CharField(max_length=100, blank=True, null=True)
     pending_review_reminder_attempts = models.IntegerField(default=DEFAULT_PENDING_REVIEW_REMINDER_ATTEMPTS)
     ratings_fetch_URL = models.CharField(max_length=100, blank=True, null=True)
-    ratings_fetch_URL_authentication_keys = models.JSONField()
+    ratings_fetch_URL_authentication_keys = models.JSONField(blank=True,null=True)
     ratings_fetch_URL_v2 = models.CharField(max_length=100, blank=True, null=True)
-    ratings_fetch_URL_v2_authentication_keys = models.JSONField()
+    ratings_fetch_URL_v2_authentication_keys = models.JSONField(blank=True,null=True)
     enable_team_confirmation = models.BooleanField(default=False)
     team_confirmation_time = models.TimeField(blank=True, null=True)
     calender_start_time = models.TimeField(blank=True, null=True)
     calender_end_time = models.TimeField(blank=True, null=True)
     team_confirmation_time_zone = models.CharField(max_length=100, blank=True, null=True)
-    team_confirmation_day = models.IntegerField()
+    team_confirmation_day = models.IntegerField(blank=True,null=True)
     team_confirmation_notification_type = models.CharField(max_length=100, blank=True, null=True)
     team_confirmation_type = models.IntegerField(choices=[
         (TeamConfirmationType.SCHEDULE, 'Schedule'),
@@ -126,18 +126,18 @@ class CompanyProfile(models.Model):
     change_reschedule_status_title = models.BooleanField(default=False)
     team_confirmation_queued_task_name = models.CharField(max_length=100, blank=True, null=True)
     rating_type = models.CharField(default=DEFAULT_RATING_TYPE, max_length=100)
-    rating_threshold = models.IntegerField()
+    rating_threshold = models.IntegerField(blank=True,null=True)
     review_response_delay = models.IntegerField(default=DEFAULT_REVIEW_RESPONSE_DELAY)
-    exceptions = models.JSONField()
-    samsara_integration_info = models.OneToOneField(OldExternalIntegration, on_delete=models.CASCADE)
-    task_notifications_settings = models.JSONField()
-    status_priority = models.JSONField()
-    mileage_unit = models.IntegerField()
+    exceptions = models.JSONField(blank=True,null=True)
+    samsara_integration_info = models.OneToOneField(OldExternalIntegration, on_delete=models.CASCADE,blank=True,null=True)
+    task_notifications_settings = models.JSONField(blank=True,null=True)
+    status_priority = models.JSONField(blank=True,null=True)
+    mileage_unit = models.IntegerField(blank=True,null=True)
     calendar_week_starts_from = models.CharField(max_length=100, blank=True, null=True)
     calendar_week_ends_on = models.CharField(max_length=100, blank=True, null=True)
     is_documents_disabled = models.BooleanField(default=True)
-    filters = models.JSONField()
-    time_line_filters = models.JSONField()
+    filters = models.JSONField(blank=True,null=True)
+    time_line_filters = models.JSONField(blank=True,null=True)
     signup_channel = models.IntegerField(choices=[
         (InvitationChannelType.EMAIL, 'Email'),
         (InvitationChannelType.SMS, 'SMS'),
@@ -152,8 +152,8 @@ class CompanyProfile(models.Model):
                  (RouteStartPoint.TASK, 'Task')],
         default=RouteStartPoint.GROUP
     )
-    depot_departure_time = models.TimeField()
-    additional_addresses = models.JSONField()
+    depot_departure_time = models.TimeField(blank=True,null=True)
+    additional_addresses = models.JSONField(blank=True,null=True)
     show_route_editing_instructions = models.BooleanField(default=True)
     auto_fill_customer_address = models.BooleanField(default=True)
     can_customer_mark_statuses = models.BooleanField(default=False)
@@ -169,8 +169,8 @@ class CompanyProfile(models.Model):
     sender_name = models.CharField(max_length=100, blank=True, null=True)
 
     # TODO: we need to move the above enterprise branding fields inside these JSON property
-    white_labeling_settings = models.JSONField()  # This should always hold authentication keys of third party platforms like Twilio and should never be exposed publicily
-    white_labeling_public_settings = models.JSONField()
+    white_labeling_settings = models.JSONField(blank=True,null=True)  # This should always hold authentication keys of third party platforms like Twilio and should never be exposed publicily
+    white_labeling_public_settings = models.JSONField(blank=True,null=True)
     white_label_enabled = models.BooleanField(default=False)
 
     enforce_group_company_timezone_on_customer_communication = models.BooleanField(default=False)
@@ -180,7 +180,7 @@ class CompanyProfile(models.Model):
     enable_customer_view_settings_for_scheduler = models.BooleanField(default=False)
     send_task_reminders_according_to_work_week_settings = models.BooleanField(default=True)
 
-    crm_services_info = models.OneToOneField(CRMServiceInfo, on_delete=models.CASCADE)
+    crm_services_info = models.OneToOneField(CRMServiceInfo, on_delete=models.CASCADE,blank=True,null=True)
 
     enable_safety_measures = models.BooleanField(default=False)
     safety_measures_title = models.CharField(max_length=100, blank=True, null=True)
@@ -192,7 +192,7 @@ class CompanyProfile(models.Model):
     use_company_or_group_time_zone_for_internal_notifications = models.BooleanField(default=False)
     show_social_links_on_live_track = models.BooleanField(default=True)
 
-    ui_filters_settings = models.JSONField()
+    ui_filters_settings = models.JSONField(blank=True,null=True)
 
     enable_multi_day = models.BooleanField(default=True)
 
@@ -215,7 +215,7 @@ class CompanyProfile(models.Model):
     # Attributes to be used in Kiosk mode
     allow_kiosk_mode = models.BooleanField(default=False)
     username_prefix = models.CharField(max_length=100, blank=True, null=True)
-    auto_logout_after = models.IntegerField()  # in seconds
+    auto_logout_after = models.IntegerField(blank=True,null=True)  # in seconds
 
     enable_sms_notifications = models.BooleanField(default=False)
     # enable_status_priority_sms_notifications is deprecated
@@ -276,7 +276,7 @@ class CompanyProfile(models.Model):
     # To enable image compression on File uploads(i.e imageUpload Component)
     enable_image_compression = models.BooleanField(default=True)
     "--------------------------------- Custom Integrations Configurations --------------------------------------"
-    custom_integrations = models.OneToOneField(CustomIntegrationInfo, on_delete=models.CASCADE)
+    custom_integrations = models.OneToOneField(CustomIntegrationInfo, on_delete=models.CASCADE,blank=True,null=True)
     "-----------------------------------------------------------------------------------------------------------"
 
     "------------------------- Premium features control flags and billing attributes ---------------------------"
@@ -289,7 +289,7 @@ class CompanyProfile(models.Model):
     is_premium_enabled = models.BooleanField(default=False)
 
     # Example object: {"Route Editing": {"price": 250, "discount": 10}, "Forms": {"price": 100, "discount": 10}}
-    premium_charges_details = models.JSONField()
+    premium_charges_details = models.JSONField(blank=True,null=True)
 
     # When is plan is changed from Premium to Standard, we still need to provide premium features to the company till
     # next charge and also charge them as premium customer. This attr will hold the info that the plan of the company
@@ -299,13 +299,13 @@ class CompanyProfile(models.Model):
 
     "------------------------------------------ Analytics Attributes -------------------------------------------"
     # When business was contact for the first time
-    contact_date = models.DateTimeField()
+    contact_date = models.DateTimeField(blank=True,null=True)
 
     # when businesses subscribe
-    subscribe_date = models.DateTimeField()
+    subscribe_date = models.DateTimeField(blank=True,null=True)
 
     # when businesses unsubscribe
-    tombstone_date = models.DateTimeField()
+    tombstone_date = models.DateTimeField(blank=True,null=True)
 
     # indicates businesses crm status
     crm_status = models.CharField(default="LEAD", blank=True, null=True, max_length=100)
@@ -316,7 +316,7 @@ class CompanyProfile(models.Model):
     crm_business_industry = models.CharField(default="SERVICE", max_length=100)
 
     # when on-boarding of a business started
-    onboarding_date = models.DateTimeField()
+    onboarding_date = models.DateTimeField(blank=True,null=True)
 
     # indicates the number of team members for company
     company_size = models.CharField(max_length=100, blank=True, null=True)
@@ -346,7 +346,7 @@ class CompanyProfile(models.Model):
     # Indicates if company has enabled sign-in via qr_code for its entities
     allow_sign_in_via_qr = models.BooleanField(default=False)
     # Settings containing relative information related to qr_code and if settings updated/qr-mode selected once or not.
-    qr_settings = models.OneToOneField(QrSettingsInfo, on_delete=models.CASCADE)
+    qr_settings = models.OneToOneField(QrSettingsInfo, on_delete=models.CASCADE,blank=True,null=True)
     "-----------------------------------------------------------------------------------------------------------"
 
     "------------------------------------------ Enterprise Login Attributes --------------------------------"
@@ -364,4 +364,4 @@ class CompanyProfile(models.Model):
                  (ConsentProvidedType.YES, 'Yes'),
                  (ConsentProvidedType.GET_EVERYTIME, 'Everytime')],
         default=ConsentProvidedType.INACTIVE)
-    sms_consent_information = models.JSONField()
+    sms_consent_information = models.JSONField(blank=True,null=True)

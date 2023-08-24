@@ -2,98 +2,122 @@ from django.http import HttpResponse, JsonResponse
 import json
 from utils import Util
 import logging
-from .models import ArrivyUser, UserProfile, EntityProfile, Entity, CompanyProfile
+from .models import ArrivyUser, UserProfile, EntityProfile, Entity, CompanyProfile,UserCompany
 from signups.extraClasses import *
 
 
 # Create your views here.
 
+
+def create_entity(request):
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+
+    email = data.get('email')
+    name = data.get('name')
+    company_id = ArrivyUser.objects.get(username='abdullah')  # later we will fetch the authenticated user
+    entity = Entity(
+        owner=company_id,
+        name=name,
+        email=email
+    )
+    entity.save()
+
+
 def signup(request):
     if request.method == 'POST':
-        #t=Entity.objects.filter(owner__email='a@a.com')
-        #print(t[0].pk)
+        # t=Entity.objects.filter(owner__email='a@a.com')
+        # print(t[0].pk)
         # tt=list(EntityProfile.objects.all())
         # for t in tt:
         #     print(t.user_companies.owned_company_id.email)
         # pp=list(Entity.objects.all())
         # for p in pp:
         #     print(p.owner.email)
-        # user = ArrivyUser(username='abd1', email='a@a.com', first_name='ABD')
+        # user=ArrivyUser.objects.all()
+        # for u in user:
+        #     print(f'{u.username} {u.pk}')
+        # try:
+        #     e = EntityProfile.objects.get(user_companies__owned_company_id__pk=10)
+        #     print(e)
+        # except Exception as e:
+        #     print(e)
+
+        # user = ArrivyUser( username='abdullah',email='abdullah.asim@arrivy.com', first_name='Abdullah')
+        # user.set_password('12345')
         # user.save()
-        return HttpResponse('User Created')
+        ##return HttpResponse('User Created')
         try:
             data = json.loads(request.body)
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON data'}, status=400)
 
-        email = ''
-        if data.get('email') and data.get('email') != "":
-            email = data.get('email')
-            email = email.lower()
-            email = Util.strip_email_address(email)
-            if not Util.is_email_valid(email):
-                return HttpResponse('Invalid Email', status=400)
-
-        logging.info(f'Email is: {email}')
-
-        plan = convert_plan_type_to_text(PlanType.TEAM_MEMBERS)
-        plan_id = PlanType.TEAM_MEMBERS
-        if data.get('is_enterprise'):
-            if Util.check_if_true('is_enterprise', data.get('is_enterprise')):
-                plan_id = PlanType.ENTERPRISE
-                plan = convert_plan_type_to_text(PlanType.ENTERPRISE)
-
-        is_premium_enabled = True
-        if data.get('is_premium_enabled'):
-            if Util.check_if_false('is_premium_enabled', data.get('is_premium_enabled')):
-                is_premium_enabled = False
-
-        entity_id = None
-        if data.get('entity_id'):
-            if not Util.check_if_integer('entity_id', data.get('entity_id')):
-                return HttpResponse('Invalid entity_id', status=400)
-            entity_id = int(data.get('entity_id'))
-
-        signup_source = None
-        if data.get('signup_source') and data.get('signup_source') != "":
-            if not Util.check_if_string('signup_source', data.get('signup_source')):
-                logging.info("signup_source is not string.")
-                return HttpResponse("Invalid signup_source", 400)
-            signup_source = data.get('signup_source')
-
-        sso_access_token = None
-        if data.get('sso_access_token') and data.request.get('sso_access_token') != "":
-            if Util.check_attribute_type('sso_access_token', data.get('sso_access_token')) != 'string':
-                logging.info("sso_access_token is not string.")
-                return HttpResponse("Invalid access_token", status=400)
-            sso_access_token = data.get('sso_access_token')
-
-        sso_identification_key = None
-        if data.get('sso_identification_key') and data.get('sso_identification_key') != "":
-            if Util.check_attribute_type('sso_identification_key',
-                                         data.get('sso_identification_key')) != 'string':
-                logging.info("sso_identification_key is not string.")
-                return HttpResponse("Invalid sso_identification_key", status=400)
-
-            sso_identification_key = data.get('sso_identification_key')
-
-        fullname = data.get('fullname')
-        username = data.get('username')
-        company_name = data.get('company_name')
-        password = data.get('password')
-        ref = data.get('ref')
-        phone = data.get('phone')
-
-    #register_user(email, password, fullname)
+        # email = ''
+        # if data.get('email') and data.get('email') != "":
+        #     email = data.get('email')
+        #     email = email.lower()
+        #     email = Util.strip_email_address(email)
+        #     if not Util.is_email_valid(email):
+        #         return HttpResponse('Invalid Email', status=400)
+        #
+        # logging.info(f'Email is: {email}')
+        #
+        # plan = convert_plan_type_to_text(PlanType.TEAM_MEMBERS)
+        # plan_id = PlanType.TEAM_MEMBERS
+        # if data.get('is_enterprise'):
+        #     if Util.check_if_true('is_enterprise', data.get('is_enterprise')):
+        #         plan_id = PlanType.ENTERPRISE
+        #         plan = convert_plan_type_to_text(PlanType.ENTERPRISE)
+        #
+        # is_premium_enabled = True
+        # if data.get('is_premium_enabled'):
+        #     if Util.check_if_false('is_premium_enabled', data.get('is_premium_enabled')):
+        #         is_premium_enabled = False
+        #
+        # entity_id = None
+        # if data.get('entity_id'):
+        #     if not Util.check_if_integer('entity_id', data.get('entity_id')):
+        #         return HttpResponse('Invalid entity_id', status=400)
+        #     entity_id = int(data.get('entity_id'))
+        #
+        # signup_source = None
+        # if data.get('signup_source') and data.get('signup_source') != "":
+        #     if not Util.check_if_string('signup_source', data.get('signup_source')):
+        #         logging.info("signup_source is not string.")
+        #         return HttpResponse("Invalid signup_source", 400)
+        #     signup_source = data.get('signup_source')
+        #
+        # sso_access_token = None
+        # if data.get('sso_access_token') and data.request.get('sso_access_token') != "":
+        #     if Util.check_attribute_type('sso_access_token', data.get('sso_access_token')) != 'string':
+        #         logging.info("sso_access_token is not string.")
+        #         return HttpResponse("Invalid access_token", status=400)
+        #     sso_access_token = data.get('sso_access_token')
+        #
+        # sso_identification_key = None
+        # if data.get('sso_identification_key') and data.get('sso_identification_key') != "":
+        #     if Util.check_attribute_type('sso_identification_key',
+        #                                  data.get('sso_identification_key')) != 'string':
+        #         logging.info("sso_identification_key is not string.")
+        #         return HttpResponse("Invalid sso_identification_key", status=400)
+        #
+        #     sso_identification_key = data.get('sso_identification_key')
+        #
+        # fullname = data.get('fullname')
+        # username = data.get('username')
+        # company_name = data.get('company_name')
+        # password = data.get('password')
+        # ref = data.get('ref')
+        # phone = data.get('phone')
+        email=data.get('email')
+        password=data.get('password')
+        fullname=data.get('fullname')
+        register_user(email, password, fullname)
     return HttpResponse('User created')
 
-
-# def register_user(email, password, request_fullname, ref, entity_id, send_verification_email_or_phone=True,
-#                   phone=None, plan_id=PlanType.TEAM_MEMBERS, plan=convert_plan_type_to_text(PlanType.TEAM_MEMBERS),
-#                   request_company_name=None, custom_message_type=None, is_premium_enabled=True, username=None,
-#                   verified=False, return_communication_data=False, signup_source=None, sso_access_token=None,
-#                   sso_identification_key=None):
-def register_user(email, password, request_fullname, verified=False):
+def register_user(userEmail, password, request_fullname, verified=False):
     if request_fullname and not isinstance(request_fullname, str):
         fullname = str(request_fullname.encode('utf-8'))
     else:
@@ -101,87 +125,160 @@ def register_user(email, password, request_fullname, verified=False):
 
     # first we search that entity already exists we do so by searching the entity table
     # with the email in the request
+    entity_already_exists=None
+    try:
+        entity_already_exists = Entity.objects.get(email=userEmail)  # fetching email
+    except Exception as e:
+        logging.error(e)
 
-    entity_already_exists=list(Entity.objects.filter(owner__email=email)) #fetching email
-
+    id_of_already_existing_entity = None
+    owner_of_already_existing_entity = None
     if entity_already_exists:
-        entity_already_exists=entity_already_exists[0]
-        id_of_already_existing_entity=entity_already_exists.pk
+        id_of_already_existing_entity = entity_already_exists
+        owner_of_already_existing_entity = entity_already_exists.owner
+        user_type = convert_entity_user_type_to_name(entity_already_exists.user_type)
 
+        old_entity_profile=None
+        try:
+            old_entity_profile = EntityProfile.objects.get(user_companies__company_entity_id
+                                                           =id_of_already_existing_entity)
+        except Exception as e:
+            logging.error(e)
 
+        if not old_entity_profile:  # if no entity profile is found we search for
+            try:
+                old_entity_profile = CompanyProfile.objects.get(default_entity_id__pk=id_of_already_existing_entity)
+            except Exception as e:
+                logging.error(e)
 
+        company_profile=None
+        try:
+            company_profile = CompanyProfile.objects.get(owner=owner_of_already_existing_entity)
+        except Exception as e:
+            logging.error(e)
 
-    newuser = ArrivyUser(
-        email=email,
-        username=email,
+    existing_users_within_company=None
+    if entity_already_exists and userEmail:
+        try:
+            existing_users_within_company = list(EntityProfile.objects.
+            filter(
+                user_companies__owned_company_id=owner_of_already_existing_entity))
+        except Exception as e:
+            logging.error(e)
+
+    # existing_user_found = None
+    # for existing_user_within_company in existing_users_within_company:
+    #     for existing_user_within_company_user_company in existing_user_within_company.user_companies:
+    #         if existing_user_within_company_user_company.owned_company_id.pk == owner_of_already_existing_entity and \
+    #                 existing_user_within_company_user_company.signup_address == userEmail and \
+    #                 existing_user_within_company_user_company.company_entity_id.pk != id_of_already_existing_entity:
+    #             logging.info('Entity profile already exists with same email')
+    #             existing_user_found = True
+
+    newUser = ArrivyUser(
+        email=userEmail,
+        username=userEmail,
         first_name=fullname,
         verified=verified,
         isCompany=True
     )
-    newuser.set_password(password)
-    newuser.save()
+    newUser.set_password(password)
+    newUser.save()
 
-    notifications = dict(
-        sms=True,
-        email=True,
-        mobile_notifications=True,
-        desktop_notifications=True
-    )
-    allow_status_notifications = dict(
-        ASSIGNED_TASKS_AND_ACTIVITIES=dict(title="Assigned Tasks & Activities", is_selected=False),
-        OWN_PRIMARY_GROUP=dict(title="Own Primary Group", is_selected=False),
-        OTHER_GROUPS=dict(title="Others Groups", is_selected=False),
-        OTHERS=dict(title="Others", is_selected=False)
-    )
-
-    entity = Entity(
-        owner=newuser,
-        name=fullname,
-        username=email,
-        type="Company",
-        is_default=True,
-        email=email,
-        group_id=None,
-        notifications=notifications,
-        allow_status_notifications=allow_status_notifications,
-        user_type=convert_entity_user_name_to_type('CREW')
-    )
-    entity.save()
-
+    default_entity_id=None
+    owned_company_id=None
+    company_entity_id=None
+    company_owned=False
+    if entity_already_exists:
+        owned_company_id = owner_of_already_existing_entity
+        company_entity_id = id_of_already_existing_entity
+        company_owned=True
+        logging.info('Entity Already Exists')
+    else:
+        notifications = dict(
+            sms=True,
+            email=True,
+            mobile_notifications=True,
+            desktop_notifications=True
+        )
+        allow_status_notifications = dict(
+            ASSIGNED_TASKS_AND_ACTIVITIES=dict(title="Assigned Tasks & Activities", is_selected=False),
+            OWN_PRIMARY_GROUP=dict(title="Own Primary Group", is_selected=False),
+            OTHER_GROUPS=dict(title="Others Groups", is_selected=False),
+            OTHERS=dict(title="Others", is_selected=False)
+        )
+        # owner_user=ArrivyUser.objects.get(username='abdullah')
+        entity = Entity(
+            owner=newUser,
+            name=fullname,
+            username=userEmail,
+            type="Company",
+            is_default=True,
+            email=userEmail,
+            group_id=None,
+            notifications=notifications,
+            allow_status_notifications=allow_status_notifications,
+            user_type=convert_entity_user_name_to_type('CREW')
+        )
+        entity.save()
+        default_entity_id=entity
+    # owner_user = ArrivyUser.objects.get(username='abdullah')
+    logging.info('Creating User Profile')
     profile = UserProfile(
-        owner=newuser,
+        owner=newUser,
         fullname=fullname,
         company_owned=True,
-        owned_company_id=1,
-        company_entity_id=entity,
-        default_entity_id=entity.pk,
-        support_email=email,
+        owned_company_id=owned_company_id,
+        company_entity_id=company_entity_id,
+        default_entity_id=default_entity_id,
+        support_email=userEmail,
         plan=convert_plan_type_to_text(PlanType.TEAM_MEMBERS),
         plan_id=PlanType.TEAM_MEMBERS,
         status_priority=get_status_priorities(),
-        signup_address="",
+        signup_address=userEmail,
         signup_channel=InvitationChannelType.EMAIL,
     )
     profile.save()
-
-    company_profile = CompanyProfile(
-        owner=newuser,
-        fullname=fullname,
-        default_entity_id=entity.pk,
-        support_email=email,
-        # acquisition_source=ref,
-        plan=convert_plan_type_to_text(PlanType.TEAM_MEMBERS),
-        plan_id=PlanType.TEAM_MEMBERS,
-        status_priority=get_status_priorities(),
-        # mobile_number=phone,
-        signup_channel=InvitationChannelType.EMAIL,
-        signup_address='',
-        is_premium_enabled=True,
-        is_test=False,
-        is_company_verified=False,
-        permission_groups_that_can_approve_crew_availability_requests=PERMISSION_GROUPS_THAT_CAN_APPROVE_CREW_AVAILABILITY_REQUESTS,
-        sms_consent_provided=ConsentProvidedType.NO
-    )
+    if company_owned:
+        user_company = UserCompany(
+            owned_company_id=owned_company_id,
+            company_entity_id=company_entity_id,
+            signup_address=userEmail,
+            signup_channel=InvitationChannelType.EMAIL
+        )
+        user_company.save()
+        logging.info('Creating Entity Profile')
+        entity_profile = EntityProfile(
+            owner=newUser,
+            fullname=fullname,
+            owned_company_id=owned_company_id,
+            company_entity_id=company_entity_id,
+            email=userEmail,
+            user_companies=user_company
+        )
+        entity_profile.save()
+    else:
+        logging.info('Creating Company Profile')
+        company_profile = CompanyProfile(
+            owner=newUser,
+            fullname=fullname,
+            default_entity_id=default_entity_id,
+            support_email=userEmail,
+            # acquisition_source=ref,
+            plan=convert_plan_type_to_text(PlanType.TEAM_MEMBERS),
+            plan_id=PlanType.TEAM_MEMBERS,
+            status_priority=get_status_priorities(),
+            # mobile_number=phone,
+            signup_channel=InvitationChannelType.EMAIL,
+            signup_address='',
+            is_premium_enabled=True,
+            is_test=False,
+            is_company_verified=False,
+            permission_groups_that_can_approve_crew_availability_requests=PERMISSION_GROUPS_THAT_CAN_APPROVE_CREW_AVAILABILITY_REQUESTS,
+            sms_consent_provided=ConsentProvidedType.NO
+        )
+        company_profile.save()
+    # return HttpResponse('User Created')
 
     # communication_data = []
     # if request_company_name and not isinstance(request_company_name, str):
