@@ -1,27 +1,32 @@
 from google.cloud import ndb
 import json
 
+
 class AttributeDict(dict):
     __getattr__ = dict.__getitem__
     __setattr__ = dict.__setitem__
 
+
 class ObjectProperty(ndb.BlobProperty):
-  def _to_base_type(self, value):
-    if isinstance(value, dict) or isinstance(value, AttributeDict):
-        return json.dumps(value)
-    else:
+    def _to_base_type(self, value):
+        if isinstance(value, dict) or isinstance(value, AttributeDict):
+            return json.dumps(value)
+        else:
+            return value
+
+    def _from_base_type(self, value):
+        if isinstance(value, str):
+            try:
+                return AttributeDict(json.loads(value))
+            except:
+                return value
         return value
 
-  def _from_base_type(self, value):
-    if isinstance(value, str):
-        try:
-            return AttributeDict(json.loads(value))
-        except:
-            return value
-    return value
 
-class User(ndb.User):
-
+class User(ndb.Model):
+    email=ndb.StringProperty()
+    password=ndb.StringProperty()
+    name=ndb.StringProperty()
     auth_token = ndb.StringProperty()
     settings = ObjectProperty()
     is_disabled = ndb.BooleanProperty(default=False)

@@ -1,7 +1,8 @@
 from google.cloud import ndb
 from signups.extraClasses import *
 
-class Entity:
+
+class Entity(ndb.Model):
     owner = ndb.IntegerProperty()
     name = ndb.StringProperty()
     username = ndb.StringProperty()
@@ -82,3 +83,10 @@ class Entity:
     entity_customer_id = ndb.IntegerProperty()
     # Company bookings which are visible to customer on company customer portal
     visible_bookings = ndb.IntegerProperty(repeated=True)
+
+    @classmethod
+    def by_email(cls, email):
+        return cls.query(cls.email == email)
+
+    def get_id(self):
+        return int(self._key.id())

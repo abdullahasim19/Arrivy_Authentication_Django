@@ -1,7 +1,7 @@
 from google.cloud import ndb
 from signups.extraClasses import *
-from ndbUser import User
-from ndbCompanyProfile import CRMServiceInfo,OldExternalIntegration
+from .ndbUser import User
+from .ndbCompanyProfile import CRMServiceInfo,OldExternalIntegration
 
 
 class UserProfile(ndb.Model):

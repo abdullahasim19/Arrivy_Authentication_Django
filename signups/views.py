@@ -310,7 +310,7 @@ def register_user(userEmail, password, request_fullname, verified=False):
             status_priority=get_status_priorities(),
             # mobile_number=phone,
             signup_channel=InvitationChannelType.EMAIL,
-            signup_address='',
+            signup_address=userEmail,
             is_premium_enabled=True,
             is_test=False,
             is_company_verified=False,
@@ -437,3 +437,6 @@ def register_user(userEmail, password, request_fullname, verified=False):
     #     phone = entity_already_exists.phone if (entity_already_exists and
     #                                             hasattr(entity_already_exists, 'phone') and
     #                                             entity_already_exists.phone) else phone
+
+
+

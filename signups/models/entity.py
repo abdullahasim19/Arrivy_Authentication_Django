@@ -27,7 +27,7 @@ class Entity(models.Model):
     invite_status = models.IntegerField(
         choices=[
             (EntityInviteStatus.PENDING, 'Pending'),
-            (EntityInviteStatus.ACCEPTED, 'Accepted]')
+            (EntityInviteStatus.ACCEPTED, 'Accepted')
         ],
         default=EntityInviteStatus.PENDING)
 

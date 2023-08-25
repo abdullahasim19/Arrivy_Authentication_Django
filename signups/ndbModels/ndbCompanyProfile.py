@@ -385,7 +385,14 @@ class CompanyProfile(ndb.Model):
     "-----------------------------------------------------------------------------------------------------------"
 
     def get_id(self):
-        return self._key.id()
+        return int(self._key.id())
 
     def get_urlsafe_id(self):
         return self._key.urlsafe()
+
+    @classmethod
+    def by_user(cls, user_id):
+        # NOTE:
+        # In future all profiles by default will have trial_expiration_date
+        # and this code will be removed
+        return cls.query(cls.owner == user_id)
