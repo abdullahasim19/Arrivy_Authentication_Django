@@ -1,3 +1,4 @@
+import django.contrib.auth.hashers
 from google.cloud import ndb
 from django.http import HttpResponse, JsonResponse
 import os
@@ -11,7 +12,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from .auth import generate_access_token, generate_refresh_token
 from rest_framework.permissions import AllowAny
-
+from django.contrib.auth.hashers import make_password
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "credentials.json"
 
 
@@ -44,6 +45,12 @@ def home(request):
     #     a=ArrivyUser.objects.get(email='test@arrivy.comss')
     # except Exception as e:
     #     print(e)
+    #print(a)
+
+    # a=make_password('hello')
+    # b=make_password('hello')
+    # t = django.contrib.auth.hashers.check_password('hello',b)
+    # print(t)
     #print(a)
     return HttpResponse('HELLO WORLD')
     # client = ndb.Client()

@@ -9,6 +9,7 @@ from arrivy.auth import generate_access_token, generate_refresh_token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
+from django.contrib.auth.hashers import make_password,check_password
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "credentials.json"
 
@@ -24,7 +25,7 @@ def create_entity_ndb(request):
     email = data.get('email')
     name = data.get('fullname')
     password = data.get('password')
-
+    password=make_password(password)
     client = ndb.Client()
     # if ndb.get_context():
     #     ndb.get_context().clear_cache()
@@ -36,7 +37,12 @@ def create_entity_ndb(request):
 
     register_user(email, password, name)
 
-    return HttpResponse('Entity Created')
+    res=Response()
+    res.data={
+        "message":"Entity Created"
+    }
+
+    return res
 
 
 def register_user(email, password, request_fullname):
@@ -188,9 +194,9 @@ def register_user(email, password, request_fullname):
     # context.__exit__(None, None, None)
 
 
+@api_view(['POST'])
+@permission_classes([AllowAny])
 def signup_ndb(request):
-    if request.method != 'POST':
-        return HttpResponse('Error')
     try:
         data = json.loads(request.body)
     except json.JSONDecodeError:
@@ -200,8 +206,14 @@ def signup_ndb(request):
     password = data.get('password')
     fullname = data.get('fullname')
 
+    password=make_password(password)
+
     register_user(email, password, fullname)
-    return HttpResponse('USER CREATED')
+    res=Response()
+    res.data={
+        'message':'USER CREATED'
+    }
+    return res
 
 
 @api_view(['POST'])
@@ -218,7 +230,7 @@ def login_ndb(request):
         user = User.query(User.email == email).get()
         if not user:
             return HttpResponse('USER NOT FOUND', status=401)
-        if user.password != password:
+        if not check_password(password,user.password):
             return HttpResponse('INVALID PASSWORD', status=401)
 
     access_token = generate_access_token(user)
