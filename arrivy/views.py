@@ -6,6 +6,7 @@ from signups.ndbModels.ndbUser import User
 from signups.ndbModels.ndbCompanyProfile import CompanyProfile
 from signups.ndbModels.ndbEntityProfile import EntityProfile
 from signups.ndbModels.ndbUserProfile import UserProfile
+from signups.models.userModel import ArrivyUser
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from .auth import generate_access_token, generate_refresh_token
@@ -39,6 +40,11 @@ def fun2(request):
 
 # @api_view(['GET'])
 def home(request):
+    # try:
+    #     a=ArrivyUser.objects.get(email='test@arrivy.comss')
+    # except Exception as e:
+    #     print(e)
+    #print(a)
     return HttpResponse('HELLO WORLD')
     # client = ndb.Client()
     # with client.context():

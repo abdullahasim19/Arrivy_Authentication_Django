@@ -8,7 +8,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 
-
 # Create your views here.
 
 
@@ -21,7 +20,7 @@ def logout_user(request):
 
 @login_required
 def create_entity(request):
-    if request.method!='POST':
+    if request.method != 'POST':
         return HttpResponse('Error')
     try:
         data = json.loads(request.body)
@@ -30,11 +29,9 @@ def create_entity(request):
 
     email = data.get('email')
     name = data.get('fullname')
-    password=data.get('password')
-    ##t=request.user
-    ##print(type(t))
-    ##return HttpResponse('hello')
-    company_id=request.user
+    password = data.get('password')
+
+    company_id = request.user
     ##company_id = ArrivyUser.objects.get(username='test@arrivy.com')  # later we will fetch the authenticated user
     entity = Entity(
         owner=company_id,
@@ -42,26 +39,26 @@ def create_entity(request):
         email=email
     )
     entity.save()
-    register_user(email,password,name)
+    register_user(email, password, name)
     return HttpResponse('Entity Created')
 
 
 def login_user(request):
-    if request.method=="POST":
+    if request.method == "POST":
         try:
             data = json.loads(request.body)
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON data'}, status=400)
-        email=data.get("email")
-        password=data.get("password")
+        email = data.get("email")
+        password = data.get("password")
         user = authenticate(request, username=email, password=password)
         if user:
             login(request, user)
             return HttpResponse('LOGIN DONE')
         else:
-            return HttpResponse('LOGIN FAILED',status=401)
+            return HttpResponse('LOGIN FAILED', status=401)
 
-    return HttpResponse('ERROR',status=400)
+    return HttpResponse('ERROR', status=400)
 
 
 def signup(request):
@@ -437,6 +434,3 @@ def register_user(userEmail, password, request_fullname, verified=False):
     #     phone = entity_already_exists.phone if (entity_already_exists and
     #                                             hasattr(entity_already_exists, 'phone') and
     #                                             entity_already_exists.phone) else phone
-
-
-
