@@ -16,10 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from .views import home
+from .views import home,generate,protecteds
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/', include('signups.urls')), # all the ndb logic and sqlite login
-    path('', home) # default
+    path('',home ), # default
+    path('a/',protecteds)
 ]

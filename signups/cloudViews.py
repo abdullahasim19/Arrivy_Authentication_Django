@@ -5,11 +5,17 @@ import os
 import logging
 from .extraClasses import *
 import json
+from arrivy.auth import generate_access_token, generate_refresh_token
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "credentials.json"
 
 
+@api_view(['POST'])
 def create_entity_ndb(request):
+    #return HttpResponse('HELLO')
     try:
         data = json.loads(request.body)
     except json.JSONDecodeError:
@@ -23,7 +29,7 @@ def create_entity_ndb(request):
     # if ndb.get_context():
     #     ndb.get_context().clear_cache()
     with client.context():
-        o = User.query(User.email == 'a@arrivy.com').get()
+        o = User.query(User.email == request.user.email).get()
         i = int(o.user_id())
         e = Entity(owner=i, email=email, name=name)
         e.put()
@@ -196,6 +202,35 @@ def signup_ndb(request):
 
     register_user(email, password, fullname)
     return HttpResponse('USER CREATED')
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def login_ndb(request):
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+
+    client = ndb.Client()
+    email, password = data.get('email'), data.get('password')
+    with client.context():
+        user = User.query(User.email == email).get()
+        if not user:
+            return HttpResponse('USER NOT FOUND', status=401)
+        if user.password != password:
+            return HttpResponse('INVALID PASSWORD', status=401)
+
+    access_token = generate_access_token(user)
+    refresh_token = generate_refresh_token(user)
+
+    res = Response()
+    res.set_cookie(key='refreshtoken', value=refresh_token, httponly=True)
+    res.data = {
+        'access_token': access_token,
+        'user': user.email,
+    }
+    return res
 
 
 def testing(request):

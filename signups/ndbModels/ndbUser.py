@@ -45,3 +45,6 @@ class User(ndb.Model):
 
     def user_id(self):
         return str(self._key.id())
+
+    def is_authenticated(self):
+        return True
