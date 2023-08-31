@@ -922,3 +922,68 @@ def convert_entity_user_type_to_name(entity_type):
         return EntityUserTypeNames.CREW
     else:
         return EntityUserTypeNames.CREW
+
+
+
+class ExternalModuleType:
+    def __init__(self):
+        pass
+
+    ROUTE_OPTIMIZER = 1000
+
+    @classmethod
+    def get_all_external_module_types(cls):
+        return [(cls.ROUTE_OPTIMIZER,'Optimizer')]
+
+
+
+
+class ActivityType:
+    NOTE = 2001
+    CALL = 2002
+    APPOINTMENT = 2003
+    TO_DO = 2004
+    BREAK = 2005
+    EMAIL = 2006
+
+    @classmethod
+    def get_all_activity_type(cls):
+        return [cls.NOTE, cls.CALL, cls.APPOINTMENT, cls.TO_DO, cls.BREAK, cls.EMAIL]
+
+
+class ShareTypes:
+
+    INTERNAL = 1000
+    PDF_ONLY = 1001
+    FULL = 1002
+
+    @classmethod
+    def get_share_types(cls):
+        return [cls.INTERNAL, cls.PDF_ONLY, cls.FULL]
+
+
+class FormBelongsToTypes:
+    TASK = 1000
+    CHECKLIST_ITEM = 1001
+
+    @classmethod
+    def get_form_belongs_to_types(cls):
+        return [cls.TASK, cls.CHECKLIST_ITEM]
+
+
+class TaskConfirmationFinalStatus:
+    ACCEPTED = 'ACCEPTED'
+    REJECTED = 'REJECTED'
+    PARTIALLY_ACCEPTED = 'PARTIALLY_ACCEPTED'
+    UN_RESPONDED = 'UN_RESPONDED'
+
+
+
+class CustomerTypes:
+    CUSTOMER = 5001
+    LEAD = 5002
+
+
+class UseDropdownLabelsAndValuesAs:
+    USE_AS_LABELS = 'USE_AS_LABELS'
+    USE_AS_NUMERIC = 'USE_AS_NUMERIC'

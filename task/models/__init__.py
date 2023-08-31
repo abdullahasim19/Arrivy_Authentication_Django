@@ -1,0 +1,1 @@
+from .taskDetails import Task

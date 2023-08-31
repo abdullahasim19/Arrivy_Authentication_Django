@@ -23,4 +23,6 @@ urlpatterns = [
     path('user/', include('signups.urls')),  # all the ndb logic and sqlite login
     path('', home),  # default
 
+    path('task/', include('task.urls'))
+
 ]

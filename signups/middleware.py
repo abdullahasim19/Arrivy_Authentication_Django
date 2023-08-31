@@ -6,7 +6,6 @@ from google.cloud import ndb
 def ndb_django_middleware(get_response):
     client = ndb.Client()
 
-
     def middleware(request):
         with client.context():
             return get_response(request)
